@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$USER_HOME$/My Documents" vcs="Git" />
+    <mapping directory="$USER_HOME$/OneDrive/문서/GitHub/oss/oss-project-" vcs="Git" />
   </component>
 </project>
