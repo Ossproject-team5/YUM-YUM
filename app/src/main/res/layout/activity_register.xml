@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:orientation="vertical"
+    android:background="#000000"
+    android:padding="20sp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        android:gravity="center"
+        android:text="회 원 가 입"
+        android:textColor="@color/white"
+        android:textSize="48sp" />
+
+    <ImageView
+        android:layout_width="120sp"
+        android:layout_height="120sp"
+        android:background="@drawable/logo"
+        android:layout_gravity="center"
+        android:layout_margin="30sp"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:hint="E-mail"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:hint="PW"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10sp">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0sp"
+            android:layout_weight="11"
+            android:layout_height="wrap_content"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/checkPW"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:background="#FFFFFF"
+                android:hint="PW 확인"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnPWCheck"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="1sp"
+            android:layout_weight="2"
+            android:background="@color/gary"
+            android:onClick="mClick"
+            android:text="PW 확인"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nickname"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFFFFF"
+            android:hint="CID" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="@color/gary"
+        android:onClick="mClick"
+        android:text="회원가입"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
+</LinearLayout>

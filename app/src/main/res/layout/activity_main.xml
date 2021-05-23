@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/drawerLayout"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70sp"
+            android:background="@drawable/ic_bubble">
+
+            <ImageView
+                android:id="@+id/openDrawerView"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10sp"
+                android:src="@drawable/logo" />
+
+            <ImageView
+                android:id="@+id/imgSignOut"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="270sp"
+                android:src="@drawable/login1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="1"
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
