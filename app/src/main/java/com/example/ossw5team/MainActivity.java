@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +38,17 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.util.Base64;
+import android.util.Log;
+
+import net.daum.mf.map.api.MapView;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
@@ -62,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getHashKey();
+
         //액션바 안보이게 지정
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -72,15 +86,19 @@ public class MainActivity extends AppCompatActivity {
         userEmail = currentUser.getEmail();
         System.out.println(userEmail);
 
-        pager=findViewById(R.id.pager);
-
         array=new ArrayList<>();
         array.add(new RestaurantFragment());
         array.add(new SearchFragment());
 
 //        ad = new PageAdapter(getSupportFragmentManager());
 //        pager.setAdapter(ad);
-        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
+//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
+
+        MapView mapView = new MapView(this);
+
+        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
+
     }
 
     //로그인 되어있으면 currentUser 변수에 유저정보 할당. 아닌경우 login 페이지로 이동!
@@ -107,6 +125,27 @@ public class MainActivity extends AppCompatActivity {
         else {
             backBtnTime = curTime;
             Toast.makeText(this, "한번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getHashKey(){
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo("com.example.ossw5team", PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo == null)
+            Log.e("KeyHash", "KeyHash:null");
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (NoSuchAlgorithmException e) {
+                Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
+            }
         }
     }
 
