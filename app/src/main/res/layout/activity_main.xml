@@ -41,7 +41,24 @@
         <RelativeLayout
             android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+
+            <ToggleButton
+                android:id="@+id/fab1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="290sp"
+                android:layout_marginTop="700sp"
+                app:backgroundTint="#ffffff"
+                app:elevation="6dp"
+                android:textOn="나침반ON"
+                android:textOff="나침반OFF"
+                android:onClick="onToggleClicked"/>
+        </RelativeLayout>
+
+
 
     </LinearLayout>
 
