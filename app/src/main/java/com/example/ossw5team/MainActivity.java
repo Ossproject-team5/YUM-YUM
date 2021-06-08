@@ -1,64 +1,56 @@
-package com.example.ossw5team;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+package com.example.ossw5team;// 패키지 이름
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Color;
+import android.location.LocationManager;
+import android.os.Bundle;//String 값부터 다양한 Pracelable type까지 mapping 해줌.
+                         //Parcelable type : 기본 type(int, bool, long, string)이 아닌 class객체를 activity 간에 주고 받기 위한 type
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;//view를 상속받아 화면에 배치하여 구현하기 위함.
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;// 구형 Android기기에서 일부 최신 플랫폼 기능을 사용하려는 활동의 기본 클래스.
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import net.daum.mf.map.api.MapCircle;
+import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapView;
+import net.daum.mf.map.api.MapView;//Kakao API의 MapView import
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener{
+public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener {
+    final static String TAG = "MapTAG";
     private FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     //현재 로그인 된 유저 정보를 담을 변수
@@ -66,25 +58,42 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     private long backBtnTime = 0;
     Intent intent;
 
-    TabLayout tab;
-    ViewPager pager;
+    //전역변수
+    Button btnSearch;
+    EditText mSearchEdit;
 
     String userEmail;
     String fStoreEmail;
     String fStoreNickname;
+
     //맵 뷰
     private static final String LOG_TAG = "MainActivity";
-    private MapView mapView;
-    private ViewGroup mapViewContainer;
+    MapView mapView;
+    ViewGroup mapViewContainer;
+
     //현재위치정보
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION};
-    boolean isTrackingMode = false; //트래킹 모드인지
+    boolean isTrackingMode = false; //트래킹 모드
+
+    //value
+    MapPoint currentMapPoint;
+    private double mCurrentLng; //Long = X, Lat = Yㅌ
+    private double mCurrentLat;
+    private double mSearchLng = -1;
+    private double mSearchLat = -1;
+    private String mSearchName;
+
+    ArrayList<Document> cafeList = new ArrayList<>(); //카페 CE7
+    ArrayList<Document> restaurantList = new ArrayList<>(); //음식점 FD6
+
+    ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
+
+    MapPOIItem searchMarker = new MapPOIItem();
 
 
     ArrayList<Fragment> array;
-//    PageAdapter ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,25 +113,28 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         System.out.println(userEmail);
 
         array=new ArrayList<>();
-        array.add(new RestaurantFragment());
-        array.add(new SearchFragment());
 
-//        ad = new PageAdapter(getSupportFragmentManager());
-//        pager.setAdapter(ad);
-//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab));
-
-       initView();
+        initView();
 
     }
 
     private void initView(){
-        //맵 띄우기
-        mapView = new MapView(this);
+        mSearchEdit = findViewById(R.id.map_et_search);
+        btnSearch = findViewById(R.id.button_search);
 
-        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-        //위치정보 모으기
+        //맵 띄우기
+        mapView = new MapView(this);//MapView 선언
         mapView.setMapViewEventListener(this);
+        mapView.setPOIItemEventListener(this);
+        mapView.setOpenAPIKeyAuthenticationResultListener(this);
+
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_view);//MapView 띄울 레이아웃의 아이디 지정
+        mapViewContainer.addView(mapView);//View 에 MapView 추기
+
+        btnSearch.setOnClickListener(this);
+
+        //위치정보 모으기
+        mapView.setCurrentLocationEventListener(this);
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
@@ -130,6 +142,97 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
             checkRunTimePermission();
         }
 
+        requestSearchLocal(mCurrentLng, mCurrentLat);
+
+        //검색
+
+    }
+
+    private void requestSearchLocal(double x, double y) {
+        documentArrayList.clear();
+        restaurantList.clear();
+        cafeList.clear();
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "FD6", x + "", y + "", 1000);
+        call.enqueue(new Callback<CategoryResult>() {
+            @Override
+            public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getDocuments() != null) {
+                        Log.d(TAG, "restaurantList Success");
+                        restaurantList.addAll(response.body().getDocuments());
+                    }
+                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", x + "", y + "", 1000);
+                    call.enqueue(new Callback<CategoryResult>() {
+                        @Override
+                        public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                            if (response.isSuccessful()) {
+                                assert response.body() != null;
+                                Log.d(TAG, "cafeList Success");
+                                cafeList.addAll(response.body().getDocuments());
+                                //모두 통신 성공 시 circle 생성
+                                MapCircle circle1 = new MapCircle(
+                                        MapPoint.mapPointWithGeoCoord(y, x), // center
+                                        1000, // radius
+                                        Color.argb(128, 255, 0, 0), // strokeColor
+                                        Color.argb(128, 0, 255, 0) // fillColor
+                                );
+                                circle1.setTag(5678);
+                                mapView.addCircle(circle1);
+                                Log.d("SIZE1", restaurantList.size() + "");
+                                Log.d("SIZE2", cafeList.size() + "");
+                                //마커 생성
+                                int tagNum = 30;
+                                for (Document document : restaurantList) {
+                                    MapPOIItem marker = new MapPOIItem();
+                                    marker.setItemName(document.getPlaceName());
+                                    marker.setTag(tagNum++);
+                                    double x = Double.parseDouble(document.getY());
+                                    double y = Double.parseDouble(document.getX());
+                                    //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                    MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                    marker.setMapPoint(mapPoint);
+                                    marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 마커타입을 커스텀 마커로 지정.
+                                    marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+//                                    marker.setCustomImageResourceId(R.drawable.ic_food); // 마커 이미지.
+//                                    marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+//                                    marker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+                                    mapView.addPOIItem(marker);
+                                }
+                                for (Document document : cafeList) {
+                                    MapPOIItem marker = new MapPOIItem();
+                                    marker.setItemName(document.getPlaceName());
+                                    marker.setTag(tagNum++);
+                                    double x = Double.parseDouble(document.getY());
+                                    double y = Double.parseDouble(document.getX());
+                                    //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                    MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                    marker.setMapPoint(mapPoint);
+                                    marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 마커타입을 커스텀 마커로 지정.
+                                    marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+//                                    marker.setCustomImageResourceId(R.drawable.ic_food); // 마커 이미지.
+//                                    marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+//                                    marker.setCustomImageAnchor(0.5f, 1.0f);
+                                    mapView.addPOIItem(marker);
+                                }
+                            }
+                        }
+
+
+                        @Override
+                        public void onFailure(@NotNull Call<CategoryResult> call, @NotNull Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<CategoryResult> call, @NotNull Throwable t) {
+                Log.d(TAG, "FAIL");
+            }
+        });
     }
 
     public void onToggleClicked(View view){
@@ -152,9 +255,16 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     }
 
     @Override
-    public void onCurrentLocationUpdate(MapView mapView, MapPoint currentLocation, float accuracyInMeters) {
-        MapPoint.GeoCoordinate mapPointGeo = currentLocation.getMapPointGeoCoord();
+    public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(LOG_TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
+        currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        //이 좌표로 지도 중심 이동
+        mapView.setMapCenterPoint(currentMapPoint, true);
+        //전역변수로 현재 좌표 저장
+        mCurrentLat = mapPointGeo.latitude;
+        mCurrentLng = mapPointGeo.longitude;
+        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
     }
     @Override
     public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
@@ -334,6 +444,33 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
     }
 
+    @Override
+    public void onDaumMapOpenAPIKeyAuthenticationResult(MapView mapView, int i, String s) {
+
+    }
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
+
+
     //로그인 되어있으면 currentUser 변수에 유저정보 할당. 아닌경우 login 페이지로 이동!
     @Override
     public void onStart() {
@@ -380,6 +517,11 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                 Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
             }
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 
 
