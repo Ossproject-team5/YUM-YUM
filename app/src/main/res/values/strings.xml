@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Yum Yum</string>
+    <string name="daummap_key">b640ca812a9330fdedac7c45a8ea7bce</string>
+    <string name="restapi_key">KakaoAK 280cc893ecb93167895a5d6324b39012</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
