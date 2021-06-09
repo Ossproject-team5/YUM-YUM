@@ -83,6 +83,20 @@
                 android:textOn="나침반ON"
                 app:backgroundTint="#ffffff"
                 app:elevation="6dp" />
+
+            <ToggleButton
+                android:id="@+id/fab2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="290sp"
+                android:layout_marginTop="550sp"
+                android:onClick="onToggleClicked2"
+                android:textOff="위치추적\nOFF"
+                android:textOn="위치추적\nON"
+                app:backgroundTint="#ffffff"
+                app:elevation="6dp" />
+
         </RelativeLayout>
 
 

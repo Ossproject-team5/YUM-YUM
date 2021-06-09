@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                                 cafeList.addAll(response.body().getDocuments());
                                 //모두 통신 성공 시 circle 생성
                                 MapCircle circle1 = new MapCircle(
-                                        MapPoint.mapPointWithGeoCoord(y, x), // center
+                                        MapPoint.mapPointWithGeoCoord(x, y), // center
                                         1000, // radius
                                         Color.argb(128, 255, 0, 0), // strokeColor
                                         Color.argb(128, 0, 255, 0) // fillColor
@@ -248,12 +248,24 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         }
     }
 
+    public void onToggleClicked2(View view){
+        boolean on = ((ToggleButton) view).isChecked();
+
+        if (on){
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        }
+        else {
+            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mapViewContainer.removeAllViews();
     }
 
+    //현재위치 업데이트
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
@@ -265,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
+
     }
     @Override
     public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
@@ -272,10 +285,14 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
     @Override
     public void onCurrentLocationUpdateFailed(MapView mapView) {
+        Log.i(TAG, "onCurrentLocationUpdateFailed");
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
     @Override
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
+        Log.i(TAG, "onCurrentLocationUpdateCancelled");
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
 
