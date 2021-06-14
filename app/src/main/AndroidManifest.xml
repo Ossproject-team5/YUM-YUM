@@ -27,6 +27,9 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".UserInfo"
+            />
+        <activity
             android:name=".IntroActivity"
             android:screenOrientation="portrait">
             <intent-filter>

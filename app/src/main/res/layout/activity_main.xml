@@ -28,13 +28,13 @@
                 android:layout_margin="10sp"
                 android:src="@drawable/logo" />
 
-            <ImageView
+            <Button
                 android:id="@+id/imgSignOut"
                 android:layout_width="50sp"
                 android:layout_height="50sp"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="270sp"
-                android:src="@drawable/login1" />
+                android:text="유저"  />
 
         </LinearLayout>
 
@@ -92,8 +92,8 @@
                 android:layout_marginStart="290sp"
                 android:layout_marginTop="550sp"
                 android:onClick="onToggleClicked2"
-                android:textOff="위치추적\nOFF"
-                android:textOn="위치추적\nON"
+                android:textOff="위치추적\nON"
+                android:textOn="위치추적\nOFF"
                 app:backgroundTint="#ffffff"
                 app:elevation="6dp" />
 

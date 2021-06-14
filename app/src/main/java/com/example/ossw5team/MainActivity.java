@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     Intent intent;
 
     //전역변수
-    Button btnSearch;
+    Button btnSearch, userbtn;
     EditText mSearchEdit;
 
     String userEmail;
@@ -121,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
     private void initView(){
         mSearchEdit = findViewById(R.id.map_et_search);
         btnSearch = findViewById(R.id.button_search);
+        userbtn = findViewById(R.id.imgSignOut);
+
+        userbtn.setOnClickListener(this);
 
         //맵 띄우기
         mapView = new MapView(this);//MapView 선언
@@ -146,8 +149,20 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         mapView.removeAllCircles();
         requestSearchLocal(mCurrentLng, mCurrentLat);
 
-        //검색
 
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.imgSignOut:
+                intent = new Intent(MainActivity.this, UserInfo.class);
+                startActivity(intent);
+                break;
+
+        }
     }
 
     private void requestSearchLocal(double x, double y) {
@@ -537,11 +552,6 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                 Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
             }
         }
-    }
-
-    @Override
-    public void onClick(View view) {
-
     }
 
 
