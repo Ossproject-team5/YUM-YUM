@@ -19,7 +19,8 @@
         android:layout_height="39dp"
         android:text="TextView"
         tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="210dp" />
+        tools:layout_editor_absoluteY="210dp"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imgSignOut2"
@@ -29,7 +30,8 @@
         android:layout_margin="270sp"
         android:src="@drawable/login1"
         tools:layout_editor_absoluteX="45dp"
-        tools:layout_editor_absoluteY="158dp" />
+        tools:layout_editor_absoluteY="158dp"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/textView"
@@ -37,7 +39,8 @@
         android:layout_height="39dp"
         android:text="TextView"
         tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="171dp" />
+        tools:layout_editor_absoluteY="171dp"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/textView4"
@@ -45,7 +48,8 @@
         android:layout_height="209dp"
         android:text="TextView"
         tools:layout_editor_absoluteX="53dp"
-        tools:layout_editor_absoluteY="437dp" />
+        tools:layout_editor_absoluteY="437dp"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -53,6 +57,7 @@
         android:layout_height="80dp"
         app:srcCompat="@drawable/_1"
         tools:layout_editor_absoluteX="53dp"
-        tools:layout_editor_absoluteY="346dp" />
+        tools:layout_editor_absoluteY="346dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

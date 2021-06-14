@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;//view를 상속받아 화면에 배치하여 구현하기 위함.
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -111,6 +112,11 @@ public class MainActivity<currentUser> extends AppCompatActivity implements MapV
         currentUser = fAuth.getCurrentUser();
         userEmail = currentUser.getEmail();
         System.out.println(userEmail);
+
+        TextView textView = (TextView) findViewById(R.id.textView) ;
+        textView.setText("currentUser.id");
+        TextView textView2 = (TextView) findViewById(R.id.textView2) ;
+        textView2.setText("currentUser.name");
 
         array=new ArrayList<>();
 
@@ -511,7 +517,7 @@ public void UserInfo() {
         // Name, email address, and profile
         String name = currentUser.getDisplayName();
         String email = currentUser.getEmail();
-        boolean emailVerified = currentUser.isEmailVerified();
+        //boolean emailVerified = currentUser.isEmailVerified();
         String uid = currentUser.getUid();
     } else {
         // No user is signed in
