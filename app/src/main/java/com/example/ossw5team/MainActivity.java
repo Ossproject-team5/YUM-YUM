@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
     //value
     MapPoint currentMapPoint;
-    private double mCurrentLng; //Long = X, Lat = Yㅌ
+    private double mCurrentLng; //Long = X, Lat = Y
     private double mCurrentLat;
     private double mSearchLng = -1;
     private double mSearchLat = -1;
@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
             checkRunTimePermission();
         }
 
+        mapView.removeAllPOIItems();
+        mapView.removeAllCircles();
         requestSearchLocal(mCurrentLng, mCurrentLat);
 
         //검색
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         restaurantList.clear();
         cafeList.clear();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "FD6", x + "", y + "", 1000);
+        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "FD6", x + "", y + "", 500);
         call.enqueue(new Callback<CategoryResult>() {
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
                         Log.d(TAG, "restaurantList Success");
                         restaurantList.addAll(response.body().getDocuments());
                     }
-                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", x + "", y + "", 1000);
+                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", x + "", y + "", 500);
                     call.enqueue(new Callback<CategoryResult>() {
                         @Override
                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -272,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         Log.i(LOG_TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         //이 좌표로 지도 중심 이동
-        mapView.setMapCenterPoint(currentMapPoint, true);
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude), true);
         //전역변수로 현재 좌표 저장
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
@@ -478,6 +480,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
 
     }
 
