@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -15,7 +16,7 @@ public class IntroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-
+        Log.d("intro","intro");
         //액션바 안보이게 지정
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();

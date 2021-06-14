@@ -54,7 +54,7 @@ public class MainActivity<currentUser> extends AppCompatActivity implements MapV
     final static String TAG = "MapTAG";
     private FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-    //현재 로그인 된 유저 정보를 담을 변수
+//    //현재 로그인 된 유저 정보를 담을 변수
     private FirebaseUser currentUser;
     private long backBtnTime = 0;
     Intent intent;
@@ -111,12 +111,7 @@ public class MainActivity<currentUser> extends AppCompatActivity implements MapV
         fStore = FirebaseFirestore.getInstance();
         currentUser = fAuth.getCurrentUser();
         userEmail = currentUser.getEmail();
-        System.out.println(userEmail);
 
-        TextView textView = (TextView) findViewById(R.id.textView) ;
-        textView.setText("currentUser.id");
-        TextView textView2 = (TextView) findViewById(R.id.textView2) ;
-        textView2.setText("currentUser.name");
 
         array=new ArrayList<>();
 
@@ -563,8 +558,8 @@ public void UserInfo() {
     }
 
 
-//    class PageAdapter extends FragmentStatePagerAdapter {
-//
+    class PageAdapter extends FragmentStatePagerAdapter {
+
 //        public PageAdapter(@NonNull FragmentManager fm) {
 //            super(fm);
 //        }

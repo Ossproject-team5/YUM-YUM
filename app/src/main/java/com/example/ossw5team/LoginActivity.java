@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     EditText txtEmail,txtPW;
+//    TextView txtEmail,txtPW;
     Button btnLogin, btnFindPW, btnRegister;
     String strEmail, strPW;
     private FirebaseAuth mAuth;
@@ -33,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Log.d("loginTest","로그인까진옴");
         //액션바 안보이게 지정
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
