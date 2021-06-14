@@ -505,6 +505,7 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
         }
     }
 
+
     public void onBackPressed() {
         long curTime = System.currentTimeMillis();
         long gapTime = curTime - backBtnTime;
