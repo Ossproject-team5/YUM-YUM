@@ -49,7 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener {
+public class MainActivity<currentUser> extends AppCompatActivity implements MapView.CurrentLocationEventListener, MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener {
     final static String TAG = "MapTAG";
     private FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -504,8 +504,19 @@ public class MainActivity extends AppCompatActivity implements MapView.CurrentLo
             finish();
         }
     }
-
-
+public void UserInfo() {
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    if (currentUser != null) {
+        // User is signed in
+        // Name, email address, and profile
+        String name = currentUser.getDisplayName();
+        String email = currentUser.getEmail();
+        boolean emailVerified = currentUser.isEmailVerified();
+        String uid = currentUser.getUid();
+    } else {
+        // No user is signed in
+    }
+}
     public void onBackPressed() {
         long curTime = System.currentTimeMillis();
         long gapTime = curTime - backBtnTime;
